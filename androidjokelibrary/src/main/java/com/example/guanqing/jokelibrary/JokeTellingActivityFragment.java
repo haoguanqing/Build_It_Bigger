@@ -7,13 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.udacity.gradle.jokelib.JokeLib;
-
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class JokeTellingActivityFragment extends Fragment {
+    private String joke = "";
 
     public JokeTellingActivityFragment() {
     }
@@ -23,8 +22,12 @@ public class JokeTellingActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_joke_telling, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.joke_text_view);
-        textView.setText(new JokeLib().getRandomJoke());
-        
+
+        if (getArguments()!=null){
+            joke = getArguments().getString(JokeTellingActivity.joke_key);
+            textView.setText(joke);
+        }
+
         return rootView;
     }
 
