@@ -17,8 +17,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/instructions_text_view"
+        android:id="@+id/joke_telling_button"
         android:text="@string/button_text"
         android:onClick="tellJoke"
+        />
+
+    <TextView android:text="@string/paid_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/joke_telling_button"
+        android:gravity="bottom|right"
+        android:id="@+id/paid_text_view"
         />
 
 </RelativeLayout>
