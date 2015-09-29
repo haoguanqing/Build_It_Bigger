@@ -1,17 +1,31 @@
 package com.example.guanqing.jokelibrary;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class JokeTellingActivity extends ActionBarActivity {
+    public static final String joke_key = "JOKE_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke_telling);
+        Intent intent = getIntent();
+        if (intent!=null){
+            String joke = intent.getStringExtra(joke_key);
+
+            Bundle bundle = new Bundle();
+            bundle.putString(joke_key, joke);
+            android.support.v4.app.Fragment fragment = new JokeTellingActivityFragment();
+            fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment, fragment)
+                    .commit();
+        }
     }
 
 
