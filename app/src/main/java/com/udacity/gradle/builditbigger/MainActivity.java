@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +21,7 @@ import de.greenrobot.event.EventBus;
 
 
 public class MainActivity extends ActionBarActivity {
-    private String joke = "";
+    private String joke;
     private static final String joke_key = "JOKE_KEY";
 
     @Override
@@ -31,7 +32,6 @@ public class MainActivity extends ActionBarActivity {
 
         EventBus.getDefault().register(this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,16 +55,22 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view){
-        new EndpointsAsyncTask().execute(getApplicationContext());
-
-        Intent intent = new Intent(this, JokeTellingActivity.class)
-                .putExtra(joke_key, joke);
-        startActivity(intent);
-    }
-
     public void onEvent(JokeEvent e){
         joke = e.joke;
+    }
+
+    public String getJoke(){
+        return joke;
+    }
+
+    public void tellJoke(View view){
+        new EndpointsAsyncTask().execute(getApplicationContext());
+        Log.e("HGQ DEBUG", "Got a Joke From the ApiServer: " + joke);
+        if (getJoke() != null) {
+            Intent intent = new Intent(this, JokeTellingActivity.class)
+                    .putExtra(joke_key, getJoke());
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -87,11 +93,7 @@ public class MainActivity extends ActionBarActivity {
             if (myApi == null) {  // Only do this once
                 MyJokesApi.Builder builder = new MyJokesApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
-                        // options for running against local devappserver
-                        // - 10.0.2.2 is localhost's IP address in Android emulator
-                        // - turn off compression when running against local devappserver
                         .setRootUrl("https://makeitbigger-1083.appspot.com/_ah/api/");
-                // end options for devappserver
 
                 myApi = builder.build();
             }
