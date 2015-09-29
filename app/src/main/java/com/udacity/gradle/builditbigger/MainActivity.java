@@ -1,6 +1,5 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new EndpointsAsyncTask().execute(getApplicationContext());
+        new EndpointsAsyncTask().execute();
 
         EventBus.getDefault().register(this);
     }
@@ -55,7 +54,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onEvent(JokeEvent e){
+
+    public void onEvent(GetJokeEvent e){
+        //receive broadcasting events from EventBus
         joke = e.joke;
     }
 
@@ -64,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view){
-        new EndpointsAsyncTask().execute(getApplicationContext());
+        new EndpointsAsyncTask().execute();
         Log.e("HGQ DEBUG", "Got a Joke From the ApiServer: " + joke);
         if (getJoke() != null) {
             Intent intent = new Intent(this, JokeTellingActivity.class)
@@ -82,14 +83,13 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * EndpointsAsyncTask class
-     * get the joke string from MyJokesApi
+     * get the joke string from MyJokesApi and broadcast the message using EventBus
      */
-    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+    class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
         private MyJokesApi myApi;
-        private Context context;
 
         @Override
-        protected String doInBackground(Context... params) {
+        protected String doInBackground(Void... params) {
             if (myApi == null) {  // Only do this once
                 MyJokesApi.Builder builder = new MyJokesApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
@@ -97,11 +97,10 @@ public class MainActivity extends ActionBarActivity {
 
                 myApi = builder.build();
             }
-            context = params[0];
 
             try {
                 String joke = myApi.getMyJokes().execute().getJoke();
-                JokeEvent event = new JokeEvent(joke);
+                GetJokeEvent event = new GetJokeEvent(joke);
                 //post the event
                 EventBus.getDefault().post(event);
                 return joke;
@@ -109,6 +108,5 @@ public class MainActivity extends ActionBarActivity {
                 return e.getMessage();
             }
         }
-
     }
 }
