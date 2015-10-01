@@ -16,6 +16,6 @@ GCE module and passes them to the Android Library for display.
 
 * Added free and paid flavors to an app, and set up my build to share code between them
 * Factored reusable functionalities into Java/android libraries
-* Configure a multi project build to compile my libraries and app
-* Use the Gradle App Engine plugin to deploy a backend
-* Configure an integration test suite that runs against the local App Engine development server
+* Configured a multi project build to compile my libraries and app
+* Used the Gradle App Engine plugin to deploy a backend
+* Configured an integration test suite that runs against the local App Engine development server
